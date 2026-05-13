@@ -1,5 +1,3 @@
-# Server main entry point
-
 import asyncio
 
 from audio.audio import AudioInput
@@ -9,26 +7,27 @@ from websocket_server import WebSocketServer
 async def main():
     print("Starting LiveLyricSync server...")
 
-    # Luo audio-input
     audio = AudioInput()
-
-    # Luo alignment engine
     engine = AlignmentEngine()
-
-    # Luo WebSocket-palvelin
     ws_server = WebSocketServer()
 
-    # Käynnistä WebSocket-palvelin
     server = ws_server.start()
 
-    print("WebSocket server running.")
-    print("Server initialized (placeholder).")
-
-    # Aja WebSocket-palvelin asyncio-loopissa
     async with server:
-        await asyncio.Future()  # pitää palvelimen käynnissä
+        while True:
+            # 1) Hae audiokehys
+            frame = audio.get_frame()
+
+            # 2) Syötä se alignment-moottorille
+            result = engine.process_frame(frame)
+
+            # 3) Lähetä WebSocketin kautta
+            ws_server.latest_data = result
+
+            await asyncio.sleep(0.05)  # 20 FPS päivitys
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 
 
