@@ -1,19 +1,26 @@
+import time
+
 # Alignment Engine (placeholder)
-# Tämä moduuli tulee myöhemmin:
-# - vastaanottamaan audiokehyksiä
-# - vertaamaan niitä lyriikoihin
-# - laskemaan missä kohtaa laulua ollaan
-# - palauttamaan synkronointitiedon
+# Tämä moduuli tulee myöhemmin tekemään:
+# - Audio frame → tekstin kohdistus
+# - Sanan tunnistus
+# - Aikakoodien laskenta
+# - Confidence-arvot
 
 class AlignmentEngine:
     def __init__(self):
-        pass
-
-    def load_lyrics(self, lyrics: str):
-        # TODO: esikäsittele lyriikat
-        pass
+        self.start_time = time.time()
 
     def process_frame(self, frame):
-        # TODO: analysoi audiokehys ja palauta synkka
-        return None
+        """
+        Testilogiikka:
+        - Laskee "position" ajan perusteella
+        - Palauttaa sanan None (ei vielä oikeaa tunnistusta)
+        """
 
+        position = time.time() - self.start_time
+
+        return {
+            "position": position,
+            "word": None
+        }
