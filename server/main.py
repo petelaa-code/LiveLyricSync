@@ -1,13 +1,12 @@
 # Server main entry point
-# Tämä tiedosto yhdistää:
-# - AudioInput (äänen kaappaus)
-# - AlignmentEngine (synkronointi)
-# - WebSocket-palvelin (tulee myöhemmin)
+
+import asyncio
 
 from audio.audio import AudioInput
 from alignment.engine import AlignmentEngine
+from websocket_server import WebSocketServer
 
-def main():
+async def main():
     print("Starting LiveLyricSync server...")
 
     # Luo audio-input
@@ -16,12 +15,20 @@ def main():
     # Luo alignment engine
     engine = AlignmentEngine()
 
-    # TODO: Käynnistä WebSocket-palvelin
-    # TODO: Lataa lyriikat frontilta
-    # TODO: Syötä audiokehyksiä engineen
+    # Luo WebSocket-palvelin
+    ws_server = WebSocketServer()
 
+    # Käynnistä WebSocket-palvelin
+    server = ws_server.start()
+
+    print("WebSocket server running.")
     print("Server initialized (placeholder).")
 
+    # Aja WebSocket-palvelin asyncio-loopissa
+    async with server:
+        await asyncio.Future()  # pitää palvelimen käynnissä
+
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+
 
