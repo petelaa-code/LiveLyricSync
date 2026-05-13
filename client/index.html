@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveLyricSync Client</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #status {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #4caf50;
+        }
+
+        #lyric {
+            font-size: 2rem;
+            text-align: center;
+            max-width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="status">Connecting to server…</div>
+    <div id="lyric">Waiting for lyrics…</div>
+
+    <script>
+        const statusEl = document.getElementById("status");
+        const lyricEl = document.getElementById("lyric");
+
+        const ws = new WebSocket("ws://localhost:8765");
+
+        ws.onopen = () => {
+            statusEl.textContent = "Connected to LiveLyricSync server";
+            statusEl.style.color = "#4caf50";
+        };
+
+        ws.onmessage = (event) => {
+            lyricEl.textContent = event.data;
+        };
+
+        ws.onclose = () => {
+            statusEl.textContent = "Disconnected";
+            statusEl.style.color = "#f44336";
+        };
+    </script>
+
+</body>
+</html>
