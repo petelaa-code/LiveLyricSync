@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveLyricSync Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #0f0;
+            padding: 20px;
+        }
+        #pos {
+            font-size: 2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>WebSocket Test</h1>
+<p>Status: <span id="status">Connecting...</span></p>
+<p>Position: <span id="pos">0.00</span></p>
+
+<script>
+    const statusEl = document.getElementById("status");
+    const posEl = document.getElementById("pos");
+
+    const ws = new WebSocket("ws://localhost:8765");
+
+    ws.onopen = () => {
+        statusEl.textContent = "Connected";
+        statusEl.style.color = "#0f0";
+    };
+
+    ws.onclose = () => {
+        statusEl.textContent = "Disconnected";
+        statusEl.style.color = "#f00";
+    };
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.position !== undefined) {
+            posEl.textContent = data.position.toFixed(2);
+        }
+    };
+</script>
+
+</body>
+</html>
