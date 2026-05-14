@@ -1,137 +1,117 @@
-# LiveLyricSync – Architecture Overview
+# Architecture
 
-## 1. System Summary
+## 🇬🇧 English — System Architecture
 
-LiveLyricSync is a real‑time lyric synchronization system designed for live bands.  
-It listens to a monitor mix, detects the current position in a song using audio fingerprinting and alignment, and sends the correct lyric line to connected web clients.
-
-The system consists of:
-
-- PC Server (Python)
-- Browser Client (HTML/JS)
-- WebSocket communication layer
-- Audio analysis pipeline
-- Lyric/chord rendering engine
+LiveLyricSync is built as a multi‑device, real‑time rehearsal system.  
+The architecture is designed to keep all tablets synchronized while allowing different roles (vocals, bass, guitar, drums, control) to receive customized data.
 
 ---
 
-## 2. High‑Level Architecture
+## 1. High‑Level Overview
 
-[ Mixer / Monitor Out ]
-            ↓
-        [ PC Server ]
-  - Audio Input (WASAPI/ASIO)
-  - Fingerprinting (Essentia / Chromaprint)
-  - Real-Time Alignment (DTW)
-  - Lyric Engine (ChordPro / UG / TXT)
-  - WebSocket Server
-            ↓
-   [ Tablet / Phone / Browser ]
-  - HTML/JS Client
-  - Karaoke-style Lyric Display
+The system consists of three main components:
+
+1. **WebSocket Server**
+   - Central authority for timing, section changes, and shared annotations.
+   - Broadcasts synchronized data to all connected clients.
+   - Receives commands from control tablets.
+
+2. **Display Clients (Tablets)**
+   - Show lyrics, chords, notation, cues, or other role‑specific information.
+   - Render shared drawing annotations.
+   - Stay synchronized with the server’s timeline.
+
+3. **Control Clients**
+   - Can jump between song sections.
+   - Can loop time ranges.
+   - Can draw annotations.
+   - Can receive input from page‑turner pedals.
 
 ---
 
-## 3. Server Components
+## 2. Data Flow
 
-### 3.1 Audio Input Layer
-Responsible for capturing live audio from the mixer.
+### Server → Clients
+- Timestamp updates
+- Section changes
+- Role‑specific content (lyrics, chords, tabs, cues)
+- Drawing strokes
+- Loop start/end notifications
 
-- WASAPI (Windows)
-- ASIO (low‑latency)
-- Buffer size: 2048–8192 samples
-- Output: PCM float32 frames
-
-### 3.2 Fingerprinting
-Used to match live audio to the studio track.
-
-- Chromaprint (AcoustID)
-- Essentia spectral features
-- Precomputed fingerprint stored per song
-
-### 3.3 Alignment Engine
-Determines the current playback position.
-
-- Dynamic Time Warping (DTW)
-- Sliding window comparison
-- Drift correction
-- Output: timestamp in seconds
-
-### 3.4 Lyric Engine
-Loads and parses:
-
-- ChordPro (.pro)
-- Ultimate Guitar style tabs
-- Plain text lyrics
-
-Outputs:
-
-- list of lyric lines
-- optional chord lines
-- timestamp mapping (future)
-
-### 3.5 Sync Controller
-Tracks:
-
-- current lyric index
-- next lyric
-- alignment updates
-- manual override (MVP)
-
-### 3.6 WebSocket Server
-Broadcasts JSON messages to all connected clients.
-
-Example message:
-
+Example:
 {
-  "current": "This is line 1",
-  "next": "This is line 2"
+  "type": "lyrics",
+  "time": 87.5,
+  "text": "Sample lyric line"
 }
 
----
+### Clients → Server
+- Jump commands
+- Loop commands
+- Drawing strokes
+- Role registration
+- Page‑turner pedal events
 
-## 4. Client Architecture
-
-### 4.1 WebSocket Client
-- Auto‑reconnect
-- Receives JSON lyric updates
-- Sends manual commands ("next")
-
-### 4.2 UI Renderer
-Displays:
-
-- current line (large font)
-- next line (dimmed)
-- future: karaoke highlight
-
-### 4.3 Input Handler
-For testing:
-
-- ArrowRight → next line
+Example:
+{ "command": "jump", "section": "chorus" }
 
 ---
 
-## 5. Data Flow
+## 3. Role‑Based Views
 
-Live Audio → Fingerprint → DTW Alignment → Lyric Index → WebSocket → Browser UI
+Each client registers its role:
+
+{ "role": "vocals" }
+{ "role": "bass" }
+{ "role": "guitar" }
+{ "role": "drums" }
+{ "role": "lyrics" }
+{ "role": "control" }
+
+The server sends different data streams depending on the role.
 
 ---
 
-## 6. MVP Scope
+## 4. Timing and Synchronization
 
-- Manual line switching
-- WebSocket server
-- Basic client UI
-- Static lyric loading
+The server maintains a master timeline:
+
+- Current playback time (in seconds)
+- Current section (intro, verse, chorus…)
+- Loop mode (on/off)
+- Loop boundaries (start/end)
+
+Clients do not calculate timing themselves — they follow the server.
 
 ---
 
-## 7. Future Features
+## 5. Annotation Layer
 
-- Automatic alignment
-- Tempo drift compensation
-- Multi‑view modes (singer, guitarist, drummer)
-- Chord display
-- Mobile optimization
-- Song library
-- Setlist mode
+All drawing data is broadcast to every device:
+
+{
+  "command": "draw",
+  "points": [...],
+  "color": "#ff0000",
+  "width": 3
+}
+
+Each client renders the drawing on top of its own view.
+
+---
+
+## 6. Page‑Turner Integration
+
+A control tablet interprets pedal input as:
+
+- Next section
+- Previous section
+- Loop toggle
+- Optional custom actions
+
+Pedal events are sent to the server as commands.
+
+---
+
+## 7. File Structure (Recommended)
+

@@ -1,129 +1,40 @@
 # LiveLyricSync
-### Real-time lyric display for live bands using audio alignment
 
-LiveLyricSync is an open-source project that aims to create a system capable of:
+## 🇬🇧 English — Overview
 
-- Listening to monitor output from a live mixer
-- Detecting in real time where the band is in the song
-- Displaying synchronized lyrics and chords on a tablet or phone
-- Running entirely web-based (no mobile app required)
-- Supporting Ultimate Guitar tabs, ChordPro, and plain text lyrics
+LiveLyricSync is a real-time, multi-tablet rehearsal tool for musicians.  
+Multiple tablets can display synchronized lyrics, while one or more control tablets can navigate between song sections (intro, verse, chorus, bridge), loop difficult parts, or draw annotations directly on the lyrics.  
+The system also supports Bluetooth page‑turner pedals.
 
-The goal is to provide a practical, hands-free lyric display tool for bands, singers, and live engineers during performances.
+### Features
+- Real-time WebSocket synchronization
+- Multiple display tablets
+- Control tablets (jump, loop, next, previous)
+- Timestamped lyric playback
+- Shared drawing/annotation layer
+- Page-turner pedal support
+- Modular architecture for band rehearsals
 
----
+### Goal
+To create a rehearsal tool that keeps all musicians in sync, allows fast navigation between song sections, and supports handwritten notes and looping of difficult parts.
 
-## Project Goals
-
-1. Import original song + lyrics
-2. Generate an audio fingerprint from the studio track
-3. Listen to live audio from the mixer’s monitor output
-4. Detect the current song position in real time
-5. Send the correct lyric line to connected web clients
-6. Display lyrics in a karaoke-style interface
-7. Support chords, ChordPro format, and UG-style tabs
 
 ---
 
-## Architecture Overview
+## 🇫🇮 Suomi — Yleiskuvaus
 
-[ Mixer / Monitor Out ]
-            ↓
-        [ PC Server ]
-  - Audio input (WASAPI/ASIO)
-  - Fingerprinting (Essentia / Chromaprint)
-  - Real-time alignment (DTW)
-  - Lyric engine (ChordPro/LRC)
-  - WebSocket server
-            ↓
-   [ Tablet / Phone / Browser ]
-  - HTML/JS client
-  - Karaoke-style lyric display
+LiveLyricSync on reaaliaikainen, monitablettinen treenityökalu muusikoille.  
+Useat tabletit voivat näyttää synkronoidut lyriikit, ja yksi tai useampi ohjaintabletti voi siirtyä biisin eri kohtiin (intro, säkeistö, kertsi, bridge), loopata vaikeita kohtia tai piirtää käsin merkintöjä lyriikkien päälle.  
+Järjestelmä tukee myös Bluetooth‑sivunkääntäjälaitteita.
 
----
+### Ominaisuudet
+- Reaaliaikainen WebSocket‑synkka
+- Useita näyttötabletteja
+- Ohjaintabletit (jump, loop, next, previous)
+- Aikakooditetut lyriikit
+- Jaettu piirtokerros
+- Page turner ‑tuki
+- Modulaarinen arkkitehtuuri bändikäyttöön
 
-## Repository Structure
-
-/server
-    audio/
-    alignment/
-    lyrics/
-    websocket/
-    main.py
-
-/client
-    index.html
-    style.css
-    client.js
-
-/docs
-    architecture.md
-    roadmap.md
-    examples/
-
----
-
-## Roadmap
-
-### MVP
-- WebSocket server (PC)
-- Basic web client (single-line lyric display)
-- Load UG tabs / ChordPro text
-- Manual line switching (for testing)
-
-### Beta
-- Audio input from monitor out
-- Audio fingerprinting (Chromaprint / Essentia)
-- Real-time alignment (DTW)
-- Automatic line switching
-- Karaoke-style UI
-
-### 1.0 Release
-- Tempo compensation
-- Multiple display modes (singer, guitarist, drummer)
-- Chord display
-- Mobile/tablet optimization
-- Configurable UI
-
----
-
-## Technologies
-
-### Server (PC)
-- Python (FastAPI / Flask)
-- Essentia / Chromaprint
-- NumPy / SciPy
-- DTW algorithms
-- WebSocket (aiohttp / websockets)
-
-### Client (Browser)
-- HTML / CSS / JavaScript
-- WebSocket client
-- Responsive karaoke UI
-
----
-
-## Contributing
-
-Contributions are welcome from:
-
-- DSP developers
-- Web developers
-- Musicians
-- Testers
-- Documentation writers
-
-Start by reading /docs/roadmap.md and opening an Issue or Pull Request.
-
----
-
-## License
-
-This project is licensed under the MIT License.
-Free to use, modify, and distribute.
-
----
-
-## Contact
-
-To participate, open an Issue or Discussion on GitHub.
+### Tavoite
+Rakentaa treenityökalu, joka pitää kaikki muusikot synkassa, mahdollistaa nopean siirtymisen biisin eri kohtiin ja tukee käsin tehtyjä merkintöjä sekä vaikeiden kohtien toistoa.
